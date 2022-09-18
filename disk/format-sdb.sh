@@ -26,61 +26,65 @@ umount /mnt/* &> /dev/null
 # mkdir if not existing
 mkdir -p "$MOUNT_"
 
-# Check what Hypervisor disks are available
-if [ "$SYSVENDOR" == "VMware, Inc." ];
-then
-    SYSNAME="VMware"
-    DEVTYPE=sdb
-elif [ "$SYSVENDOR" == "Microsoft Corporation" ];
-then
-    SYSNAME="Hyper-V"
-    DEVTYPE=sdb
-elif [ "$SYSVENDOR" == "innotek GmbH" ];
-then
-    SYSNAME="VirtualBox"
-    DEVTYPE=sdb
-elif [ "$SYSVENDOR" == "Xen" ];
-then
-    SYSNAME="Xen/XCP-NG"
-    DEVTYPE=xvdb
-elif [[ "$SYSVENDOR" == "QEMU" || "$SYSVENDOR" == "Red Hat" ]];
-then
-    SYSNAME="KVM/QEMU"
-    DEVTYPE=vdb
-elif [ "$SYSVENDOR" == "DigitalOcean" ];
-then
-    SYSNAME="DigitalOcean"
-    DEVTYPE=sda
-elif home_sme_server
-then
-    SYSNAME="Nextcloud Home/SME Server"
-    DEVTYPE=sda
-elif [ "$SYSVENDOR" == "UpCloud" ];
-then
-    if lsblk -e7 -e11 | grep -q sd
-    then
-        SYSNAME="UpCloud ISCSI/IDE"
-        DEVTYPE=sdb
-    elif lsblk -e7 -e11 | grep -q vd
-    then
-        SYSNAME="UpCloud VirtiO"
-        DEVTYPE=vdb
-    fi
-elif partprobe /dev/sdb &>/dev/null;
-then
-    SYSNAME="machines"
-    DEVTYPE=sdb
-elif partprobe /dev/nvme0n1  &>/dev/null;
-then
-    SYSNAME="NVMe"
-    DEVTYPE=nvme0n1
-else
-    msg_box "It seems like you didn't add a second disk. 
-To be able to put the DATA on a second drive formatted as ZFS you need to add a second disk to this server.
+SYSNAME="KVM/QEMU"
+DEVTYPE=sdb
+#     DEVTYPE=sdb
 
-This script will now exit. Please add a second disk and start over."
-    exit 1
-fi
+# # Check what Hypervisor disks are available
+# if [ "$SYSVENDOR" == "VMware, Inc." ];
+# then
+#     SYSNAME="VMware"
+#     DEVTYPE=sdb
+# elif [ "$SYSVENDOR" == "Microsoft Corporation" ];
+# then
+#     SYSNAME="Hyper-V"
+#     DEVTYPE=sdb
+# elif [ "$SYSVENDOR" == "innotek GmbH" ];
+# then
+#     SYSNAME="VirtualBox"
+#     DEVTYPE=sdb
+# elif [ "$SYSVENDOR" == "Xen" ];
+# then
+#     SYSNAME="Xen/XCP-NG"
+#     DEVTYPE=xvdb
+# elif [[ "$SYSVENDOR" == "QEMU" || "$SYSVENDOR" == "Red Hat" ]];
+# then
+#     SYSNAME="KVM/QEMU"
+#     DEVTYPE=vdb
+# elif [ "$SYSVENDOR" == "DigitalOcean" ];
+# then
+#     SYSNAME="DigitalOcean"
+#     DEVTYPE=sda
+# elif home_sme_server
+# then
+#     SYSNAME="Nextcloud Home/SME Server"
+#     DEVTYPE=sda
+# elif [ "$SYSVENDOR" == "UpCloud" ];
+# then
+#     if lsblk -e7 -e11 | grep -q sd
+#     then
+#         SYSNAME="UpCloud ISCSI/IDE"
+#         DEVTYPE=sdb
+#     elif lsblk -e7 -e11 | grep -q vd
+#     then
+#         SYSNAME="UpCloud VirtiO"
+#         DEVTYPE=vdb
+#     fi
+# elif partprobe /dev/sdb &>/dev/null;
+# then
+#     SYSNAME="machines"
+#     DEVTYPE=sdb
+# elif partprobe /dev/nvme0n1  &>/dev/null;
+# then
+#     SYSNAME="NVMe"
+#     DEVTYPE=nvme0n1
+# else
+#     msg_box "It seems like you didn't add a second disk. 
+# To be able to put the DATA on a second drive formatted as ZFS you need to add a second disk to this server.
+
+# This script will now exit. Please add a second disk and start over."
+#     exit 1
+# fi
 
 # Get the name of the drive
 DISKTYPE=$(fdisk -l | grep $DEVTYPE | awk '{print $2}' | cut -d ":" -f1 | head -1)
