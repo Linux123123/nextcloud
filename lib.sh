@@ -101,7 +101,7 @@ Confirm by pressing [ENTER]. Cancel by pressing [ESC]."
 MENU_GUIDE="Navigate with the [ARROW] keys and confirm by pressing [ENTER]. Cancel by pressing [ESC]."
 RUN_LATER_GUIDE="You can view this script later by running 'sudo bash $SCRIPTS/menu.sh'."
 # Repo
-GITHUB_REPO="https://raw.githubusercontent.com/nextcloud/vm/master"
+GITHUB_REPO="https://raw.githubusercontent.com/Linux123123/nextcloud/master"
 STATIC="$GITHUB_REPO/static"
 LETS_ENC="$GITHUB_REPO/lets-encrypt"
 APP="$GITHUB_REPO/apps"
@@ -115,7 +115,7 @@ VAGRANT_DIR="$GITHUB_REPO/vagrant"
 NOT_SUPPORTED_FOLDER="$GITHUB_REPO/not-supported"
 GEOBLOCKDAT="$GITHUB_REPO/geoblockdat"
 NCREPO="https://download.nextcloud.com/server/releases"
-ISSUES="https://github.com/nextcloud/vm/issues"
+ISSUES="https://github.com/Linux123123/nextcloud/issues"
 # User information
 GUIUSER=ncadmin
 GUIPASS=nextcloud
@@ -783,71 +783,71 @@ fi
 
 # Install certbot (Let's Encrypt)
 install_certbot() {
-if certbot --version >/dev/null 2>&1
-then
-    # Reinstall certbot (use snap instead of package)
-    # https://askubuntu.com/a/1271565
-    if dpkg -l | grep certbot >/dev/null 2>&1
-    then
-        # certbot will be removed, but still listed, so we need to check if the snap is installed as well so that this doesn't run every time
-        if ! snap list certbot >/dev/null 2>&1
-        then
-            print_text_in_color "$ICyan" "Reinstalling certbot (Let's Encrypt) as a snap instead..."
-            apt-get remove certbot -y
-            apt-get autoremove -y
-            install_if_not snapd
-            snap install core
-            snap install certbot --classic
-            # Update $PATH in current session (login and logout is required otherwise)
-            check_command hash -r
-        fi
-    fi
-else
-    print_text_in_color "$ICyan" "Installing certbot (Let's Encrypt)..."
-    install_if_not snapd
-    snap install certbot --classic
-    # Update $PATH in current session (login and logout is required otherwise)
-    check_command hash -r
-fi
+# if certbot --version >/dev/null 2>&1
+# then
+#     # Reinstall certbot (use snap instead of package)
+#     # https://askubuntu.com/a/1271565
+#     if dpkg -l | grep certbot >/dev/null 2>&1
+#     then
+#         # certbot will be removed, but still listed, so we need to check if the snap is installed as well so that this doesn't run every time
+#         if ! snap list certbot >/dev/null 2>&1
+#         then
+#             print_text_in_color "$ICyan" "Reinstalling certbot (Let's Encrypt) as a snap instead..."
+#             apt-get remove certbot -y
+#             apt-get autoremove -y
+#             install_if_not snapd
+#             snap install core
+#             snap install certbot --classic
+#             # Update $PATH in current session (login and logout is required otherwise)
+#             check_command hash -r
+#         fi
+#     fi
+# else
+#     print_text_in_color "$ICyan" "Installing certbot (Let's Encrypt)..."
+#     install_if_not snapd
+#     snap install certbot --classic
+#     # Update $PATH in current session (login and logout is required otherwise)
+#     check_command hash -r
+# fi
 }
 
 # Generate certs and configure it automatically
 # https://certbot.eff.org/docs/using.html#certbot-command-line-options
 generate_cert() {
-uir_hsts=""
-if [ -z "$SUBDOMAIN" ]
-then
-    uir_hsts="--uir --hsts"
-fi
-a2dissite 000-default.conf
-systemctl reload apache2.service
-default_le="--cert-name $1 --key-type ecdsa --renew-by-default --no-eff-email --agree-tos $uir_hsts --server https://acme-v02.api.letsencrypt.org/directory -d $1"
-#http-01
-local  standalone="certbot certonly --standalone --pre-hook \"systemctl stop apache2.service\" --post-hook \"systemctl start apache2.service\" $default_le"
-#tls-alpn-01
-local  tls_alpn_01="certbot certonly --preferred-challenges tls-alpn-01 $default_le"
-#dns
-local  dns="certbot certonly --manual --manual-public-ip-logging-ok --preferred-challenges dns $default_le"
-local  methods=(standalone dns)
+# uir_hsts=""
+# if [ -z "$SUBDOMAIN" ]
+# then
+#     uir_hsts="--uir --hsts"
+# fi
+# a2dissite 000-default.conf
+# systemctl reload apache2.service
+# default_le="--cert-name $1 --key-type ecdsa --renew-by-default --no-eff-email --agree-tos $uir_hsts --server https://acme-v02.api.letsencrypt.org/directory -d $1"
+# #http-01
+# local  standalone="certbot certonly --standalone --pre-hook \"systemctl stop apache2.service\" --post-hook \"systemctl start apache2.service\" $default_le"
+# #tls-alpn-01
+# local  tls_alpn_01="certbot certonly --preferred-challenges tls-alpn-01 $default_le"
+# #dns
+# local  dns="certbot certonly --manual --manual-public-ip-logging-ok --preferred-challenges dns $default_le"
+# local  methods=(standalone dns)
 
-for f in "${methods[@]}"
-do
-    print_text_in_color "${ICyan}" "Trying to generate certs and validate them with $f method."
-    current_method=""
-    eval current_method="\$$f"
-    if eval "$current_method"
-    then
-        return 0
-    elif [ "$f" != "${methods[$((${#methods[*]} - 1))]}" ]
-    then
-        msg_box "It seems like no certs were generated when trying \
-to validate them with the $f method. We will retry."
-    else
-        msg_box "It seems like no certs were generated when trying \
-to validate them with the $f method. We have exhausted all the methods. Please check your DNS and try again."
-        return 1;
-    fi
-done
+# for f in "${methods[@]}"
+# do
+#     print_text_in_color "${ICyan}" "Trying to generate certs and validate them with $f method."
+#     current_method=""
+#     eval current_method="\$$f"
+#     if eval "$current_method"
+#     then
+#         return 0
+#     elif [ "$f" != "${methods[$((${#methods[*]} - 1))]}" ]
+#     then
+#         msg_box "It seems like no certs were generated when trying \
+# to validate them with the $f method. We will retry."
+#     else
+#         msg_box "It seems like no certs were generated when trying \
+# to validate them with the $f method. We have exhausted all the methods. Please check your DNS and try again."
+#         return 1;
+#     fi
+# done
 }
 
 is_desec_installed() {
@@ -936,7 +936,7 @@ if [ -n "$2" ]
 then
     msg_box "The script will now do some cleanup and revert the settings."
     # Cleanup
-    snap remove certbot
+    # snap remove certbot
     rm -f "$SCRIPTS"/test-new-config.sh
 fi
 

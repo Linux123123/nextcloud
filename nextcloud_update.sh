@@ -11,7 +11,7 @@
 true
 SCRIPT_NAME="Nextcloud Update Script"
 # shellcheck source=lib.sh
-source <(curl -sL https://raw.githubusercontent.com/nextcloud/vm/master/lib.sh)
+source <(curl -sL https://raw.githubusercontent.com/Linux123123/nextcloud/master/lib.sh)
 
 # Get all needed variables from the library
 ncdb
@@ -333,7 +333,7 @@ if asuspn51
 then
     # Upgrade Realtek drivers
     print_text_in_color "$ICyan" "Upgrading Realtek firmware..."
-    curl_to_dir https://raw.githubusercontent.com/nextcloud/vm/master/network/asusnuc pn51.sh "$SCRIPTS"
+    curl_to_dir https://raw.githubusercontent.com/Linux123123/nextcloud/master/network/asusnuc pn51.sh "$SCRIPTS"
     bash "$SCRIPTS"/pn51.sh
 fi
 
@@ -356,21 +356,21 @@ fi
 
 # Reinstall certbot (use snap instead of package)
 # https://askubuntu.com/a/1271565
-if dpkg -l | grep certbot >/dev/null 2>&1
-then
-    # certbot will be removed, but still listed, so we need to check if the snap is installed as well so that this doesn't run every time
-    if ! snap list certbot >/dev/null 2>&1
-    then
-        print_text_in_color "$ICyan" "Reinstalling certbot (Let's Encrypt) as a snap instead..."
-        apt-get remove certbot -y
-        apt-get autoremove -y
-        install_if_not snapd
-        snap install core
-        snap install certbot --classic
-        # Update $PATH in current session (login and logout is required otherwise)
-        check_command hash -r
-    fi
-fi
+# if dpkg -l | grep certbot >/dev/null 2>&1
+# then
+#     # certbot will be removed, but still listed, so we need to check if the snap is installed as well so that this doesn't run every time
+#     if ! snap list certbot >/dev/null 2>&1
+#     then
+#         print_text_in_color "$ICyan" "Reinstalling certbot (Let's Encrypt) as a snap instead..."
+#         apt-get remove certbot -y
+#         apt-get autoremove -y
+#         install_if_not snapd
+#         snap install core
+#         snap install certbot --classic
+#         # Update $PATH in current session (login and logout is required otherwise)
+#         check_command hash -r
+#     fi
+# fi
 
 # Fix PHP error message
 mkdir -p /tmp/pear/cache
