@@ -783,6 +783,7 @@ fi
 
 # Install certbot (Let's Encrypt)
 install_certbot() {
+    echo "Nothing"
 # if certbot --version >/dev/null 2>&1
 # then
 #     # Reinstall certbot (use snap instead of package)
@@ -814,6 +815,7 @@ install_certbot() {
 # Generate certs and configure it automatically
 # https://certbot.eff.org/docs/using.html#certbot-command-line-options
 generate_cert() {
+    echo "Nothing"
 # uir_hsts=""
 # if [ -z "$SUBDOMAIN" ]
 # then
