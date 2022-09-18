@@ -169,6 +169,8 @@ done
 # Enable Nextcloud app
 install_and_enable_app notify_push
 
+export ALLOW_SELF_SIGNED=true
+
 # Configure the Nextcloud app and test if it works
 countdown "Waiting for the setup check to take place..." "3"
 if ! nextcloud_occ_no_check notify_push:setup "https://$NCDOMAIN/push"
