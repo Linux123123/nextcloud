@@ -789,7 +789,12 @@ install_certbot() {
 # Generate certs and configure it automatically
 # https://certbot.eff.org/docs/using.html#certbot-command-line-options
 generate_cert() {
-    echo "Nothing"
+    a2dissite 000-default.conf
+    systemctl reload apache2.service
+    mkdir -p $CERTFILES/$1
+    ln -sf /etc/ssl/chain.pem $CERTFILES/$1/chain.pem
+    ln -sf /etc/ssl/cert.pem $CERTFILES/$1/cert.pem
+    ln -sf /etc/ssl/privkey.pem $CERTFILES/$1/privkey.pem
 }
 
 is_desec_installed() {
